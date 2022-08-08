@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+  background-color: #ededed;
+}
+
+.canvasMain {
+  padding-left: 100px;
+  width: 100%;
+}
+
+.sidenav {
+  width: 80px;
+  position: fixed;
+  top: 40px;
+  left: 0px;
+}
+
+.sidenav button {
+  padding-top: 5px;
+  margin-top: 5px;
+  border: 1px solid #75E6DA;
+  font-size: 15px;
+  width: 80px;
+  color: #189AB4;
+  display: block;
+}
+
+.sidenav button:hover {
+  color: #75E6DA;
+}
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.3.0/fabric.min.js"></script>
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+</head>
+<body>
+    <div class="canvasMain">
+        <p>Try Drawing below (Drag the canvas using the grey side borders)</p>
+        
+      <div class="sidenav">
+        <button onclick="toggleDraw()">Draw &#9998;</button>
+        <button onclick="createRectangle()">Rooms</button>
+        <button onclick="createDoors()">Doors/<br>Windows</button>
+        <button onclick="createCircle()">Circle </button>
+        <button onclick="createTriangle()">Access point</button>
+        <button onclick="createTextbox()"> Text box</button>
+        
+        <button onclick="deleteObject()">Delete &#10006</button>
+        <button onclick="SaveObject()">Save</button>
+        
+      </div>
+            <canvas id="demoCanvas" height="400px" width="400px"></canvas>
+    </div>
+</body>
+<script>
+    const myCanvas = new fabric.Canvas("demoCanvas", {
+  // width: window.innerWidth - 200,
+  // height: window.innerHeight - 100,
+   width: 600,
+  height:800,
+  backgroundColor: "white",
+  isDrawingMode: false,
+  allowTouchScrolling:true
+});
+
+
+// window.onload=function() 
+// {resizeCanvas();
+//     }
+// window.onresize =function() {
+// console.log('resizing.');
+// resizeCanvas();
+// }
+// function resizeCanvas() {
+// myCanvas.width = window.innerWidth;
+// myCanvas.height = window.innerHeight;
+// }
+
+
+const toggleDraw = () => {
+  myCanvas.set({ isDrawingMode: !myCanvas.get("isDrawingMode") });
+};
+
+// var rect = new fabric.Rect({
+//  top: 100,
+//  left: 150,
+// // width :window.innerWidth,
+// // height : window.innerHeight,
+//  width: 850,
+//  height: 400,
+//  fill:'',
+//  stroke: 'red',
+//  selectable:false
+// });
+// myCanvas.add(rect);
+var grid = 20;
+
+// create grid
+
+for (var i = 0; i < (800 / grid); i++) {
+  myCanvas.add(new fabric.Line([ i * grid, 0, i * grid, 800], { stroke: '#ccc', selectable: false }));
+  myCanvas.add(new fabric.Line([ 0, i * grid, 800, i * grid], { stroke: '#ccc', selectable: false }))
+}
+
+const createRectangle = () => {
+  const rectangle = new fabric.Rect({
+    width: 50,
+    height: 50,
+    fill: '', 
+    stroke: 'black',
+    strokeWidth: 1
+    
+  });
+  myCanvas.add(rectangle);
+};
+const createDoors = () => {
+  const doors = new fabric.Rect({
+    width: 10,
+    height: 5,
+    fill: 'grey', 
+    stroke: 'black',
+    
+  });
+  myCanvas.add(doors);
+};
+const createCircle = () => {
+		// Initiate a Circle instance
+		const circle = new fabric.Circle({
+			radius: 5,
+			fill: 'blue',
+			//centeredRotation:true
+      //centeredScaling:true
+      lockScalingX:true,
+      lockScalingY:true
+		});
+    myCanvas.add(circle);
+};
+const createTriangle = () => {
+  const triangle = new fabric.Triangle({
+      width: 10,
+      height: 10,
+      fill: 'yellow',
+      stroke: 'red',
+			strokeWidth: 2,
+      lockScalingX:true,
+      lockScalingY:true
+        });
+	triangle.setControlsVisibility({
+         mt: false, 
+         mb: false, 
+         ml: false, 
+         mr: false, 
+         bl: false,
+         br: false, 
+         tl: false, 
+         tr: false,
+         mtr: false, 
+    });
+        myCanvas.add(triangle);
+};
+const createTextbox = () => {
+  const textbox = new fabric.Textbox("Write here",{
+    width : 200,
+  });
+  myCanvas.add(textbox);
+};
+
+const deleteObject = () => {
+  if(myCanvas.getActiveObject()){ myCanvas.remove(myCanvas.getActiveObject());
+  }
+};
+const SaveObject = () => {
+ // if(window.navigator.msSaveBlob)
+  //{
+  //  window.navigator.msSaveBlob(myCanvas.msSaveBlob(),"canvas.png");
+  //}
+  { const a= document.createElement("a") 
+    a.href = myCanvas.toDataURL();
+    let fileName = prompt("Save file as...");
+    a.download = fileName+".png";
+    a.click();
+  }
+
+};
+
+</script>
+</html>

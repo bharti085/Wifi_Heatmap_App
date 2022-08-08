@@ -1,0 +1,33 @@
+{
+  "name": "fileserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serve.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node serve.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "await-spawn": "^4.0.2",
+    "body-parser": "^1.20.0",
+    "child_process": "^1.0.2",
+    "cors": "^2.8.5",
+    "execSync": "^1.0.2",
+    "express": "^4.18.1",
+    "express-fileupload": "^1.4.0",
+    "gm": "^1.23.1",
+    "image-size": "^1.0.2",
+    "jimp": "^0.16.1",
+    "lodash": "^4.17.21",
+    "morgan": "^1.10.0",
+    "nodemon": "^1.4.1",
+    "pandas": "^0.0.3",
+    "python": "^0.0.4",
+    "resize-img": "^2.0.0",
+    "sharp": "^0.30.7",
+    "txt-file-to-json": "^3.0.6",
+    "util": "^0.12.4"
+  }
+}

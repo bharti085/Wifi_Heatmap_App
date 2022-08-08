@@ -1,0 +1,3 @@
+[console_scripts]
+whm = wifi_heat_mapper.main:driver
+

@@ -1,0 +1,83 @@
+{
+    "configuration": {
+        "graphs": [
+            "signal_strength"
+        ],
+        "modes": [
+            "base"
+        ],
+        "backends": [
+            "iperf3",
+            "base"
+        ],
+        "version": "0.2.4",
+        "target_interface": "if",
+        "target_ip": "ip",
+        "ssid": "TJ_5G",
+        "speedtest": -1,
+        "libre-speed-list": "",
+        "benchmark_iterations": 1
+    },
+    "results": {
+        "179": {
+            "position": {
+                "x": 386,
+                "y": 988
+            },
+            "fill_color": "lightblue",
+            "selected": false,
+            "station": false,
+            "results": {
+                "signal_strength": -60
+            }
+        },
+        "180": {
+            "position": {
+                "x": 331,
+                "y": 465
+            },
+            "fill_color": "lightblue",
+            "selected": false,
+            "station": false,
+            "results": {
+                "signal_strength": -12
+            }
+        },
+        "181": {
+            "position": {
+                "x": 418,
+                "y": 362
+            },
+            "fill_color": "lightblue",
+            "selected": false,
+            "station": false,
+            "results": {
+                "signal_strength": -30
+            }
+        },
+        "182": {
+            "position": {
+                "x": 600,
+                "y": 182
+            },
+            "fill_color": "lightblue",
+            "selected": false,
+            "station": false,
+            "results": {
+                "signal_strength": -35
+            }
+        },
+        "183": {
+            "position": {
+                "x": 86,
+                "y": 272
+            },
+            "fill_color": "lightblue",
+            "selected": false,
+            "station": false,
+            "results": {
+                "signal_strength": -70
+            }
+        }
+    }
+}
