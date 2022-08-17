@@ -1,3 +1,4 @@
+// second activity which allows user to calculate rssi and coordinates by just long press and send it to server to generate heatmap
 package com.example.myapplication;
 
 import androidx.annotation.RequiresApi;
@@ -78,7 +79,6 @@ public class MainActivity2 extends AppCompatActivity {
     Button buttonCal;
     List<ScanResult> results;
     int i = 1;
-    //    Button bt;
     Handler handler;
     double operating_band;
     int rssi;
@@ -93,7 +93,6 @@ public class MainActivity2 extends AppCompatActivity {
     int Bandwidth;
     int SLNO = 0;
     int mynum;
-    // Context context = this;
     String currentSSID = new String();
     String previousSSID = new String();
     File file;
@@ -119,9 +118,9 @@ public class MainActivity2 extends AppCompatActivity {
         imageView2 = (ImageView) findViewById(R.id.imageView2);
         Bundle extras = getIntent().getExtras();
         myUri = Uri.parse(extras.getString("EXTRA_IMAGEVIEW_URL"));
-        System.out.println("1");
-        System.out.println("1");
-        imageView2.setImageURI(myUri);
+        imageView2.setImageURI(myUri);          // display image in imageview
+        
+        // calculate the height and width of imageview according to phone's screen
         ViewTreeObserver vto = imageView2.getViewTreeObserver();
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
@@ -134,7 +133,7 @@ public class MainActivity2 extends AppCompatActivity {
             }
         });
 
-        String filePath = getPath(myUri);
+        String filePath = getPath(myUri);       // finds the path of image from uri
         Log.i("url path", String.valueOf(filePath));
 
         System.out.println("1");
@@ -155,45 +154,16 @@ public class MainActivity2 extends AppCompatActivity {
                 mDetector.onTouchEvent(event);
                 return true;
             }
-//        @RequiresApi(api = Build.VERSION_CODES.M)
-//        @Override
-//        public boolean onTouch(View v, MotionEvent event) {
-//
-//            then = (long) System.currentTimeMillis();
-//            if (event.getAction() == MotionEvent.ACTION_UP) {
-//        if ((System.currentTimeMillis() - then) > longClickDuration) {
-//            /* Implement long click behavior here */
-//            x = event.getX();
-//            y = event.getY();
-//            x1=(int)x;
-//            y1=(int)y;
-//            disp();
-//
-//            savetofile();
-//            checkEnabled();
-//            i++;
-//            SLNO++;
-//            Toast.makeText(MainActivity2.this, "X: " + x1 + " Y: " + y1 + "  RSSI:" + rssi, Toast.LENGTH_SHORT).show();
-//            System.out.println("1");
-//
-//            System.out.println("Long Click has happened!");
-//            return false;
-//        }
-//    }
-//    return true;
-//}
-        });
-//        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+
         buttonCal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                addRecord(filePath);
-
+                addRecord(filePath);        // when called send request to the server
             }
         });
     }
 
+  // gets the path of image from image URI
     public String getPath(Uri uri) {
         String[] projection = {MediaStore.MediaColumns.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
@@ -205,27 +175,12 @@ public class MainActivity2 extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
+// allow gesture listener on touch
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         this.mDetector.onTouchEvent(event);
-//        scaleGestureDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
-//    @Override
-//    public boolean onTouchEvent(MotionEvent motionEvent) {
-//        scaleGestureDetector.onTouchEvent(motionEvent);
-//        return true;
-//    }
-//    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-//        @Override
-//        public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-//            mScaleFactor *= scaleGestureDetector.getScaleFactor();
-//            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f));
-//            imageView2.setScaleX(mScaleFactor);
-//            imageView2.setScaleY(mScaleFactor);
-//            return true;
-//        }
-//    }
 
     public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         private static final String DEBUG_TAG = "Gestures";
@@ -233,22 +188,18 @@ public class MainActivity2 extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onLongPress(MotionEvent event) {
-
-            x = event.getX();
-            y = event.getY();
+            // calculate the coordinates of long press touch on screen
+            x = event.getX();       // calculate x coordinate of image
+            y = event.getY();       // calculate y coordinate of image
             x1=(int)x;
-            y1= height - (int)y;
-            disp();
-
-            savetofile();
-            checkEnabled();
+            y1= height - (int)y;    // make bottommost left point of imageview as (0,0) which is accepted by server
+            disp();                 // extract wifi information
+            savetofile();           // save all the information in txt file
+            checkEnabled();         // check min. no. to points taken to enable generate heatmap button
             i++;
             SLNO++;
             Toast.makeText(MainActivity2.this, "X: " + x1 + " Y: " + y1 + "  RSSI:" + rssi, Toast.LENGTH_SHORT).show();
-            System.out.println("1");
-
         }
-
     }
 
 
@@ -257,10 +208,11 @@ public class MainActivity2 extends AppCompatActivity {
         super.onDestroy();
     }
 
+// extract wifi information using WifiManager android library
     @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
     public void disp() {
-        //  try {
+        
         WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 
@@ -311,14 +263,11 @@ public class MainActivity2 extends AppCompatActivity {
             Log.d("Bharti", "prevSSID" + currentSSID);
             // to obtain the previous AP information
             if (previousSSID.equals(currentSSID)) {
-//                st10.setText("\n\t\t" + currentSSID + "=" + SLNO);
                 count = SLNO;
             } else if (currentSSID.equals("<unknown ssid>")) {
-//                st10.setText("\n\t\t" + previousSSID + "=" + (SLNO));
 
             } else {
                 if (count != 0) {
-//                    st11.append("\t" + previousSSID + "=" + count);
                     SLNO = 1;
                 }
             }
@@ -353,23 +302,21 @@ public class MainActivity2 extends AppCompatActivity {
         }
     }
 
-
-
+    // save all the information in txt file
+    // for saving into the file user have to give manual storage and location permissions to app
     public void savetofile() {
         Log.v("Bharti", "entering save file");
+        // make a directory called WSS
         File directory = null;
 
         directory = new File(Environment.getExternalStorageDirectory() + java.io.File.separator + "WSS");
         directory.mkdirs();
         Log.v("Bharti", "make directory file");
-
+        
+        // make a file wss.txt
         file = new File(Environment.getExternalStorageDirectory() + java.io.File.separator + "WSS" + java.io.File.separator + "WSS.txt");
-        System.out.println(file);
-
-
-//        Date currentTime = Calendar.getInstance().getTime();
-        Log.v("Bharti", "flag");
-
+      
+        // if file already exists on system delete that file
         if(flag==true)
         {   Log.v("Bharti", String.valueOf(file));
             file.delete();
@@ -383,71 +330,93 @@ public class MainActivity2 extends AppCompatActivity {
             }
         }
 
-
-
-
-        System.out.println("1");
         uri2 = Uri.parse(String.valueOf(file));
         System.out.println(uri2);
 
         try {
-            System.out.println("2");
             OutputStreamWriter file_writer = new OutputStreamWriter(new FileOutputStream(file, true));
-            System.out.println("3");
             BufferedWriter buffered_writer = new BufferedWriter(file_writer);
-            System.out.println("4");
+    
             if (SLNO == 0) {
                 buffered_writer.write("\nNumber of times" + "\tSSID" + "\tRSSI" + "\tX" + "\tY" + "\tFrequency" + "\tLinkSpeed" + "\tRxLinkSpeed" + "\tTxLinkSpeed" + "\toperating_band");
-                System.out.println("5");
                 buffered_writer.write("\n" + SLNO + "\t" + ssid + "\t" + rssi + "\t" + x1 + "\t" + y1 + "\t" + frequency + "\t" + Linkspeed + "\t" + RxLinkSpeed + "\t" + TxLinkSpeed + "\t" + operating_band);
-                System.out.println("6");
             } else {
                 buffered_writer.write("\n" + SLNO + "\t" + ssid + "\t" + rssi + "\t" + x1 + "\t" + y1 + "\t" + frequency + "\t" + Linkspeed + "\t" + RxLinkSpeed + "\t" + TxLinkSpeed + "\t" + operating_band);
-                System.out.println("6");
             }
-            System.out.println("7");
+
             buffered_writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    // check min. no. to points taken to enable generate heatmap button
     public void checkEnabled() {
         if (i > 3) {
             buttonCal.setEnabled(true);
         }
     }
 
-    //    private void addTouchListener() {
+    //sends request to the server to generate heatmap
+    //sends txt file , image choosen , height and width of imageview of phone's screen to the server
     private void addRecord(String filePath) {
-        Log.d("bharti","8");
-//            Log.d("bharti", String.valueOf(file));
         File txtFile = new File(String.valueOf(file));
         File fileImage = new File(filePath);Log.d("image path",filePath);
       Log.d("image path", String.valueOf(fileImage));
 
-//            Log.d("bharti", String.valueOf(files));
         RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), txtFile);
-//            Log.d("bharti", String.valueOf(requestBody));
-//            Log.d("bharti","9");
         MultipartBody.Part avatar = MultipartBody.Part.createFormData("txtFile", txtFile.getName(), requestBody);
-//            Log.d("bharti", String.valueOf(avatar));
-//            Log.d("bharti","10");
 
         RequestBody requestbody = RequestBody.create(MediaType.parse("image/*"), fileImage);
         MultipartBody.Part parts = MultipartBody.Part.createFormData("base64image", fileImage.getName(), requestbody);
-//            base64.replaceAll("[\\n\t ]","");
-//            Log.d("bharti", base64);
+
         RequestBody Height = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(height));
         RequestBody Width = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(width));
-//                RequestBody base64image = RequestBody.create(MediaType.parse("text/plain"), base64);
-//            Log.d("bharti", String.valueOf(base64image));
-//            Log.d("bharti","11");
-        apiCall getResponse = apiCall.getRetrofit().create(apiCall.class);
-//        Call<ResponseBody> call = getResponse.addRecord(avatar,parts);
-        Call<ResponseBody> call = getResponse.addRecord(avatar,parts,Height,Width);
-//            Log.d("bharti","13");
 
+        apiCall getResponse = apiCall.getRetrofit().create(apiCall.class);
+
+        Call<ResponseBody> call = getResponse.addRecord(avatar,parts,Height,Width);
+
+        // show a progress bar till we didn't get response from server
+        progressBar = new ProgressDialog(RSSI_xy.this);
+        progressBar.setCancelable(true);
+        progressBar.setMessage("Loading...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressBar.setProgress(0);
+        progressBar.setMax(10);
+        progressBar.show();
+        new Thread(new Runnable() {
+            public void run() {
+                while (progressBarStatus < 500) {
+                    // performing operation
+                    progressBarStatus += 1;
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    // Updating the progress bar
+                    progressBarHandler.post(new Runnable() {
+                        public void run() {
+                            progressBar.setProgress(progressBarStatus);
+                        }
+                    });
+                }
+                // performing operation if file is downloaded,
+                if (progressBarStatus >= 500) {
+                    // sleeping for 1 second after operation completed
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    // close the progress bar dialog
+                    progressBar.dismiss();
+                }
+            }
+        }).start();
+
+        //accept the response received by server
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -456,7 +425,6 @@ public class MainActivity2 extends AppCompatActivity {
                 Log.d("Response", "= " + response);
                 Log.d("Response", "= " + response.body());
                 Log.d("Response", "= " + response.getClass());
-//                        Log.d("Response", "= " + response.raw());
                 if(response.code()==200)
                 {
                     if (response.body() != null) {
@@ -466,8 +434,6 @@ public class MainActivity2 extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity2.this,HeatMapActivity.class);
                         intent.putExtra("HEATMAP_IMAGEVIEW_BITMAP", HeatmapURI.toString());
                         startActivity(intent);
-////                                imageView2.setImageBitmap(bmp);
-//                                imageView2.setImageURI(HeatmapURI);
                     }
                 }
             }
@@ -479,90 +445,15 @@ public class MainActivity2 extends AppCompatActivity {
             }
         });
     }
-
+    
+    // get image URI from bitmap of image
     public Uri getImageUri(Context inContext, Bitmap bmp) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), bmp, "Title", null);
         return Uri.parse(path);
     }
-
-//    public static class ImageResizer {
-//
-//        /**
-//         * Resizes an image to a absolute width and height (the image may not be
-//         * proportional)
-//         * @param inputImagePath Path of the original image
-//         * @param outputImagePath Path to save the resized image
-//         * @param scaledWidth absolute width in pixels
-//         * @param scaledHeight absolute height in pixels
-//         * @throws IOException
-//         */
-//        public static void resize(String inputImagePath,
-//                                  String outputImagePath, int scaledWidth, int scaledHeight)
-//                throws IOException {
-//            // reads input image
-//            File inputFile = new File(inputImagePath);
-//
-//            BufferedImage inputImage = ImageIO.read(inputFile);
-//
-//            // creates output image
-//            BufferedImage outputImage = new BufferedImage(scaledWidth,
-//                    scaledHeight, inputImage.getType());
-//
-//            // scales the input image to the output image
-//            Graphics2D g2d = outputImage.createGraphics();
-//            g2d.drawImage(inputImage, 0, 0, scaledWidth, scaledHeight, null);
-//            g2d.dispose();
-//
-//            // extracts extension of output file
-//            String formatName = outputImagePath.substring(outputImagePath
-//                    .lastIndexOf(".") + 1);
-//
-//            // writes to output file
-//            ImageIO.write(outputImage, formatName, new File(outputImagePath));
-//        }
-//    }
-//        });
-//    }
-//}
-
-
-//
-//    ;
-
-//    @SuppressLint("ClickableViewAccessibility")
-//    private void addTouchListener() {
-//
-//        imageView2.setOnTouchListener(new View.OnTouchListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.M)
-//            @Override
-//            public boolean onTouch(View view, MotionEvent event) {
-//
-//                ob.onLongPress(event);
-//                return false;
-//            }
-//        });
-//    }
-//}
-
-
-//        imageView2.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent event) {
-////                final int waitTime = 5000;
-//                x = event.getX();
-//                y = event.getY();
-////                drawCross(x,y);
-////                m_canvas.drawCircle(x,y,10,paint);
-////                imageView2.setBitmap(bmp);
-//                String msg = String.format("Coordinates : (%.2f,%.2f)", x, y);
-//                Log.d("coordinates", msg);
-//                Toast.makeText(MainActivity2.this, "X: " + x + " Y: " + y, Toast.LENGTH_SHORT).show();
-//                return false;
-//            }
-//            });
-       }
+}
 
 
 
