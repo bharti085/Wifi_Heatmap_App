@@ -17,8 +17,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 
 public interface apiCall {
-    static String BASE_URL="https://wifiserver01.herokuapp.com/";
-//    Retrofit retrofit = null;
+    static String BASE_URL="https://wifiserver01.herokuapp.com/";        // server URL
 
     public static Retrofit getRetrofit() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -32,11 +31,9 @@ public interface apiCall {
 
         return retrofit;
     }
-
+ 
+    // POST request to server
     @Multipart
     @POST("generate-heatmap")
-
-//    Call<ResponseBody> addRecord(@Part MultipartBody.Part avatar, @Part MultipartBody.Part parts);
     Call<ResponseBody> addRecord(@Part MultipartBody.Part avatar, @Part MultipartBody.Part parts,@Part("Height") RequestBody Height,@Part("Width") RequestBody Width);
-//    @Part("base64image") RequestBody base64image
 }
